@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Join{% endblock %}
+{% block public_content %}
+<section class="auth-wrap">
+  <form class="auth-card" method="POST">
+    <span class="eyebrow">Privacy first</span>
+    <h1>Create your username</h1>
+    <p class="auth-hint">No real names required. Your username is how the community will know you.</p>
+    <label>Username
+      <input type="text" name="username" value="{{ username }}" pattern="[A-Za-z0-9_]{3,20}" placeholder="e.g. quiet_thinker" required autofocus>
+    </label>
+    <label>Email <span class="label-note">(private — never shown publicly)</span>
+      <input type="email" name="email" value="{{ email }}" required>
+    </label>
+    <label>Password
+      <input type="password" name="password" minlength="6" required>
+    </label>
+    <label>Confirm password
+      <input type="password" name="confirm" minlength="6" required>
+    </label>
+    <button type="submit" class="btn btn-rose btn-lg btn-block">Join Kindred Minds</button>
+    <div class="auth-links">
+      <a href="{{ url_for('login') }}">Already have an account? Log in</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

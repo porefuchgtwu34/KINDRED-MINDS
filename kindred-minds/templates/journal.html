@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Journal{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <span class="eyebrow">Private — only you can see this</span>
+    <h1>Mood journal</h1>
+  </div>
+</div>
+
+<form class="composer journal-composer" method="POST">
+  <label class="mood-label">How are you feeling?</label>
+  <div class="mood-picker">
+    {% for mood in ['joyful','content','hopeful','anxious','sad','angry','lonely','overwhelmed'] %}
+      <label class="mood-chip">
+        <input type="radio" name="mood" value="{{ mood }}" {{ 'checked' if loop.first }}>
+        <span>{{ mood|title }}</span>
+      </label>
+    {% endfor %}
+  </div>
+  <textarea name="content" placeholder="What happened? What are you noticing about yourself?" maxlength="2000" required></textarea>
+  <button type="submit" class="btn btn-rose">Save entry</button>
+</form>
+
+<div class="journal-list">
+  {% for e in entries %}
+  <div class="journal-entry">
+    <div class="journal-entry-head">
+      <span class="mood-tag mood-{{ e.mood }}">{{ e.mood|title }}</span>
+      <time>{{ e.created_at[:16].replace('T',' ') }} UTC</time>
+    </div>
+    <p>{{ e.content }}</p>
+    {% if insights.get(e.mood) %}
+    <div class="journal-insight">
+      <strong>Reflection:</strong> {{ insights[e.mood] }}
+    </div>
+    {% endif %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <p>Your journal is empty. Your first entry is just above.</p>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

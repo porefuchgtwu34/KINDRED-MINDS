@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{{ code }} — Kindred Minds</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="error-page">
+  <h1>{{ code }}</h1>
+  <p>{{ message }}</p>
+  <a href="{{ url_for('home') }}" class="btn btn-rose">Back to Kindred Minds</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Chat with {{ other.username }}{% endblock %}
+{% block content %}
+
+<a href="{{ url_for('messages_inbox') }}" class="back-link">&larr; All conversations</a>
+
+<div class="chat-window" data-username="{{ other.username }}">
+  <header class="chat-header">
+    <span class="avatar">{{ other.username[0]|upper }}</span>
+    <div>
+      <strong>{{ other.username }}</strong>
+      <span class="chat-status" id="chat-status">messages update automatically</span>
+    </div>
+  </header>
+
+  <div class="chat-messages" id="chat-messages">
+    {% for m in messages %}
+    <div class="chat-bubble {{ 'chat-bubble-mine' if m.sender_id == current_user.id else 'chat-bubble-theirs' }}"
+         data-time="{{ m.created_at }}">
+      <p>{{ m.content }}</p>
+      <time>{{ m.created_at[11:16] }}</time>
+    </div>
+    {% endfor %}
+  </div>
+
+  <form class="chat-input-row" id="chat-form">
+    <input type="text" id="chat-input" placeholder="Write a message..." maxlength="1000" autocomplete="off" required>
+    <button type="submit" class="btn btn-rose">Send</button>
+  </form>
+</div>
+
+<script>
+  window.KINDRED_CHAT = {
+    username: {{ other.username|tojson }},
+    myId: {{ current_user.id }},
+    myName: {{ current_user.username|tojson }}
+  };
+</script>
+{% endblock %}

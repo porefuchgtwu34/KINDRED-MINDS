@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Messages{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <span class="eyebrow">Private &amp; one-on-one</span>
+    <h1>Messages</h1>
+  </div>
+</div>
+
+<div class="messages-layout">
+  <section class="conversation-list">
+    <h3 class="panel-title">Your conversations</h3>
+    {% for p in partners %}
+      <a href="{{ url_for('conversation', username=p.username) }}" class="conversation-row">
+        <span class="avatar">{{ p.username[0]|upper }}</span>
+        <span class="conversation-info">
+          <span class="conversation-name">{{ p.username }}</span>
+          <span class="conversation-preview">{{ (p.last_message or '')[:60] }}</span>
+        </span>
+        {% if p.unread %}<span class="unread-badge">{{ p.unread }}</span>{% endif %}
+      </a>
+    {% else %}
+      <p class="empty-state-sm">No conversations yet. Start one on the right.</p>
+    {% endfor %}
+  </section>
+
+  <section class="new-message-panel">
+    <h3 class="panel-title">Start a new conversation</h3>
+    <div class="user-directory">
+      {% for u in all_users %}
+        <a href="{{ url_for('conversation', username=u.username) }}" class="directory-chip">
+          <span class="avatar avatar-sm">{{ u.username[0]|upper }}</span> {{ u.username }}
+        </a>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+
+{% endblock %}

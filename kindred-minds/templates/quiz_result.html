@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Your result{% endblock %}
+{% block content %}
+
+<div class="result-card">
+  <span class="eyebrow">Your attachment style</span>
+  <h1>{{ result.title }}</h1>
+  <p>{{ result.text }}</p>
+
+  <div class="result-bars">
+    {% for style, count in tally.items() %}
+    <div class="result-bar-row">
+      <span>{{ style|title }}</span>
+      <div class="result-bar-track">
+        <div class="result-bar-fill" style="width: {{ (count / 5 * 100)|round(0, 'floor') }}%"></div>
+      </div>
+      <span>{{ count }}/5</span>
+    </div>
+    {% endfor %}
+  </div>
+
+  <p class="result-disclaimer">
+    This is a light, reflective exercise inspired by attachment theory — not a clinical
+    assessment. If relationship patterns are causing you real distress, a licensed
+    therapist can help far more than any quiz.
+  </p>
+
+  <div class="result-actions">
+    <a href="{{ url_for('quiz') }}" class="btn btn-ghost">Retake quiz</a>
+    <a href="{{ url_for('feed') }}" class="btn btn-rose">Back to feed</a>
+  </div>
+</div>
+
+{% endblock %}

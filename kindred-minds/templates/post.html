@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Post{% endblock %}
+{% block content %}
+
+<a href="{{ url_for('feed') }}" class="back-link">&larr; Back to feed</a>
+
+<article class="post-card post-card-full">
+  <header class="post-card-head">
+    <a href="{{ url_for('profile', username=post.username) }}" class="avatar-link">
+      <span class="avatar">{{ post.username[0]|upper }}</span>
+    </a>
+    <div>
+      <a href="{{ url_for('profile', username=post.username) }}" class="post-author">
+        {{ post.username }} {% if post.author_is_admin %}<span class="badge-admin">admin</span>{% endif %}
+      </a>
+      <time class="post-time">{{ post.created_at[:16].replace('T',' ') }} UTC &middot; {{ post.category.replace('-', ' ')|title }}</time>
+    </div>
+  </header>
+  <p class="post-content">{{ post.content }}</p>
+</article>
+
+<h2 class="comments-heading">{{ comments|length }} comment{{ 's' if comments|length != 1 }}</h2>
+
+<form class="composer composer-compact" method="POST" action="{{ url_for('new_comment', post_id=post.id) }}">
+  <textarea name="content" placeholder="Offer your perspective — kindly and honestly." maxlength="1000" required></textarea>
+  <button type="submit" class="btn btn-rose">Reply</button>
+</form>
+
+<div class="comment-list">
+  {% for c in comments %}
+  <div class="comment-card">
+    <a href="{{ url_for('profile', username=c.username) }}" class="avatar-link">
+      <span class="avatar avatar-sm">{{ c.username[0]|upper }}</span>
+    </a>
+    <div class="comment-body">
+      <div class="comment-meta">
+        <a href="{{ url_for('profile', username=c.username) }}" class="post-author">
+          {{ c.username }} {% if c.author_is_admin %}<span class="badge-admin">admin</span>{% endif %}
+        </a>
+        <time class="post-time">{{ c.created_at[:16].replace('T',' ') }} UTC</time>
+      </div>
+      <p>{{ c.content }}</p>
+    </div>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <p>No comments yet — be the first to offer some perspective.</p>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

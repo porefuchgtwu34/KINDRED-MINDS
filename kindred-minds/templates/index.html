@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block public_content %}
+
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">A community, not a feed</span>
+    <h1>Understand the people<br>you love. <em>Starting with yourself.</em></h1>
+    <p class="hero-sub">
+      Kindred Minds is a place to talk honestly about relationships, attachment,
+      and the small behaviours that make or break connection — with real people
+      who write back, not algorithms that guess.
+    </p>
+    <div class="hero-cta">
+      <a href="{{ url_for('register') }}" class="btn btn-rose btn-lg">Join the community</a>
+      <a href="{{ url_for('login') }}" class="btn btn-ghost btn-lg">I already have an account</a>
+    </div>
+    <div class="hero-quote">
+      <svg width="18" height="14" viewBox="0 0 18 14" fill="none"><path d="M2 12 C 5 4, 8 4, 11 12 S 16 14, 17 8" stroke="var(--gold)" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <p>&ldquo;{{ quote[0] }}&rdquo; <span>— {{ quote[1] }}</span></p>
+    </div>
+  </div>
+
+  <div class="hero-panel" aria-hidden="true">
+    <div class="thread-card">
+      <div class="thread-line"></div>
+      <div class="thread-bubble b1"><span class="tag">#anxious-attachment</span>How do I stop assuming silence means something's wrong?</div>
+      <div class="thread-bubble b2"><span class="tag">reply</span>Try naming the feeling out loud before acting on it. It buys you ten minutes of clarity.</div>
+      <div class="thread-bubble b3"><span class="tag">#repair</span>We had our first real fight and actually came out closer.</div>
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <div class="feature">
+    <span class="feature-index">01</span>
+    <h3>Public feed</h3>
+    <p>Post what's on your mind about love, dating, family, or friendship. The community replies with real perspective, not platitudes.</p>
+  </div>
+  <div class="feature">
+    <span class="feature-index">02</span>
+    <h3>Private messaging</h3>
+    <p>Talk one-on-one using usernames only. No phone numbers, no last names — your privacy stays yours.</p>
+  </div>
+  <div class="feature">
+    <span class="feature-index">03</span>
+    <h3>Private journal</h3>
+    <p>A mood log just for you, with small psychological reflections to help you notice your own patterns.</p>
+  </div>
+  <div class="feature">
+    <span class="feature-index">04</span>
+    <h3>Attachment quiz</h3>
+    <p>A short, research-informed quiz on attachment style — secure, anxious, or avoidant — with practical takeaways.</p>
+  </div>
+</section>
+
+<section class="cta-band">
+  <h2>Your next conversation could change how you love.</h2>
+  <a href="{{ url_for('register') }}" class="btn btn-rose btn-lg">Create your username</a>
+</section>
+
+{% endblock %}

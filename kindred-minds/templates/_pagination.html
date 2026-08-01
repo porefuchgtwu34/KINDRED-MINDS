@@ -1,0 +1,15 @@
+<nav class="pagination" aria-label="Pagination">
+  {% if page > 1 %}
+    <a href="{{ url_for(endpoint, page=page-1, **extra) }}" class="page-link">&larr; Newer</a>
+  {% else %}
+    <span class="page-link disabled">&larr; Newer</span>
+  {% endif %}
+
+  <span class="page-status">Page {{ page }} of {{ total_pages }}</span>
+
+  {% if page < total_pages %}
+    <a href="{{ url_for(endpoint, page=page+1, **extra) }}" class="page-link">Older &rarr;</a>
+  {% else %}
+    <span class="page-link disabled">Older &rarr;</span>
+  {% endif %}
+</nav>

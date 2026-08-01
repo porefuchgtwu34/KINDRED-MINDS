@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Kindred Minds{% endblock %} — Kindred Minds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="{% block bodyclass %}{% endblock %}">
+
+{% if current_user %}
+<div class="app-shell">
+  <aside class="sidenav">
+    <a href="{{ url_for('feed') }}" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 40 24" width="34" height="20" fill="none">
+          <path d="M2 12 C 8 2, 14 2, 20 12 S 32 22, 38 12" stroke="var(--rose)" stroke-width="2.4" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span class="brand-word">Kindred<em>Minds</em></span>
+    </a>
+
+    <nav class="nav-links">
+      <a href="{{ url_for('feed') }}" class="{{ 'active' if request.endpoint == 'feed' }}">
+        <span class="nav-eyebrow">01</span> Feed
+      </a>
+      <a href="{{ url_for('messages_inbox') }}" class="{{ 'active' if request.endpoint in ['messages_inbox','conversation'] }}">
+        <span class="nav-eyebrow">02</span> Messages
+        <span class="unread-dot" id="unread-dot" hidden></span>
+      </a>
+      <a href="{{ url_for('journal') }}" class="{{ 'active' if request.endpoint == 'journal' }}">
+        <span class="nav-eyebrow">03</span> Journal
+      </a>
+      <a href="{{ url_for('quiz') }}" class="{{ 'active' if request.endpoint in ['quiz','quiz_result'] }}">
+        <span class="nav-eyebrow">04</span> Attachment Quiz
+      </a>
+      {% if current_user.is_admin %}
+      <a href="{{ url_for('admin_dashboard') }}" class="{{ 'active' if request.endpoint == 'admin_dashboard' }}">
+        <span class="nav-eyebrow">05</span> Admin
+      </a>
+      {% endif %}
+    </nav>
+
+    <div class="sidenav-footer">
+      <a href="{{ url_for('profile', username=current_user.username) }}" class="mini-profile">
+        <span class="avatar">{{ current_user.username[0]|upper }}</span>
+        <span class="mini-profile-name">{{ current_user.username }}</span>
+      </a>
+      <a href="{{ url_for('settings') }}" class="icon-link" title="Settings">⚙</a>
+      <a href="{{ url_for('logout') }}" class="icon-link" title="Log out">⏻</a>
+    </div>
+  </aside>
+
+  <main class="app-main">
+    {% include "_flash.html" %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+{% else %}
+<header class="site-header">
+  <a href="{{ url_for('home') }}" class="brand">
+    <span class="brand-mark">
+      <svg viewBox="0 0 40 24" width="34" height="20" fill="none">
+        <path d="M2 12 C 8 2, 14 2, 20 12 S 32 22, 38 12" stroke="var(--rose)" stroke-width="2.4" stroke-linecap="round"/>
+      </svg>
+    </span>
+    <span class="brand-word">Kindred<em>Minds</em></span>
+  </a>
+  <nav class="public-nav">
+    <a href="{{ url_for('login') }}">Log in</a>
+    <a href="{{ url_for('register') }}" class="btn btn-rose btn-sm">Join free</a>
+  </nav>
+</header>
+
+<main>
+  {% include "_flash.html" %}
+  {% block public_content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <p>Kindred Minds &copy; {{ current_year }} — a small space for love, honesty & better questions.</p>
+</footer>
+{% endif %}
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <span class="eyebrow">Admin dashboard</span>
+    <h1>Community control room</h1>
+  </div>
+</div>
+
+<div class="stat-grid">
+  <div class="stat-card"><span class="stat-num">{{ stats.users }}</span><span class="stat-label">Members</span></div>
+  <div class="stat-card"><span class="stat-num">{{ stats.posts }}</span><span class="stat-label">Posts</span></div>
+  <div class="stat-card"><span class="stat-num">{{ stats.comments }}</span><span class="stat-label">Comments</span></div>
+  <div class="stat-card"><span class="stat-num">{{ stats.messages_to_admin }}</span><span class="stat-label">Messages received</span></div>
+</div>
+
+<div class="admin-grid">
+
+  <section class="admin-panel">
+    <h3 class="panel-title">Members reaching out (admin inbox)</h3>
+    {% for p in inbox_partners %}
+      <a href="{{ url_for('conversation', username=p.username) }}" class="conversation-row">
+        <span class="avatar">{{ p.username[0]|upper }}</span>
+        <span class="conversation-info">
+          <span class="conversation-name">{{ p.username }}</span>
+          <span class="conversation-preview">{{ (p.last_message or '')[:60] }}</span>
+        </span>
+        {% if p.unread %}<span class="unread-badge">{{ p.unread }}</span>{% endif %}
+      </a>
+    {% else %}
+      <p class="empty-state-sm">No one has messaged the admin account yet.</p>
+    {% endfor %}
+  </section>
+
+  <section class="admin-panel">
+    <h3 class="panel-title">Recent posts</h3>
+    {% for post in recent_posts %}
+      <div class="admin-post-row">
+        <div>
+          <strong>{{ post.username }}</strong>
+          <p>{{ post.content[:90] }}{{ '…' if post.content|length > 90 }}</p>
+        </div>
+        <form method="POST" action="{{ url_for('admin_delete_post', post_id=post.id) }}">
+          <button type="submit" class="icon-btn" onclick="return confirm('Delete this post?')">🗑</button>
+        </form>
+      </div>
+    {% else %}
+      <p class="empty-state-sm">No posts yet.</p>
+    {% endfor %}
+  </section>
+
+</div>
+
+<section class="admin-panel admin-panel-wide">
+  <h3 class="panel-title">All members</h3>
+  <table class="admin-table">
+    <thead>
+      <tr><th>Username</th><th>Email</th><th>Posts</th><th>Joined</th><th>Status</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td><a href="{{ url_for('profile', username=u.username) }}">{{ u.username }}</a> {% if u.is_admin %}<span class="badge-admin">admin</span>{% endif %}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.post_count }}</td>
+        <td>{{ u.created_at[:10] }}</td>
+        <td>
+          {% if u.is_banned %}<span class="status-pill status-banned">Suspended</span>
+          {% else %}<span class="status-pill status-active">Active</span>{% endif %}
+        </td>
+        <td class="admin-actions">
+          {% if not u.is_admin %}
+          <form method="POST" action="{{ url_for('admin_ban_user', user_id=u.id) }}" class="inline-form">
+            <button type="submit" class="btn-tiny">{{ 'Reinstate' if u.is_banned else 'Suspend' }}</button>
+          </form>
+          <form method="POST" action="{{ url_for('admin_delete_user', user_id=u.id) }}" class="inline-form">
+            <button type="submit" class="btn-tiny btn-tiny-danger" onclick="return confirm('Delete {{ u.username }} permanently?')">Delete</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% with endpoint='admin_dashboard', extra={} %}
+    {% include "_pagination.html" %}
+  {% endwith %}
+</section>
+
+{% endblock %}
