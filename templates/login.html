@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Log in — Kindred Minds{% endblock %}
+{% block content %}
+<div class="card" style="max-width:400px;margin:2rem auto;">
+  <h2>Log in</h2>
+  {% include "_flash.html" %}
+  <form method="post">
+    <label>Username or email</label>
+    <input name="identifier" value="{{ identifier }}" required autofocus>
+    <label>Password</label>
+    <input type="password" name="password" required>
+    <button class="btn" type="submit">Log in</button>
+  </form>
+  <p style="margin-top:1rem;font-size:0.9rem;color:var(--muted)">
+    <a href="{{ url_for('register') }}">Create account</a> ·
+    <a href="{{ url_for('forgot_password') }}">Forgot password?</a>
+  </p>
+</div>
+{% endblock %}
