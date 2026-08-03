@@ -120,6 +120,32 @@ p { margin: 0; }
 }
 .icon-link:hover { opacity: 1; }
 
+/* Attractive logout button */
+.btn-logout {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(201, 24, 74, 0.15);
+  border: 1px solid rgba(201, 24, 74, 0.35);
+  color: #F7C5D3;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+  flex-shrink: 0;
+}
+.btn-logout:hover {
+  background: var(--rose);
+  border-color: var(--rose);
+  color: var(--white);
+  transform: translateY(-1px);
+}
+.btn-logout:active { transform: translateY(0); }
+.btn-logout-icon { font-size: 0.95rem; line-height: 1; }
+.btn-logout-text { line-height: 1; }
+
 .site-header {
   display: flex;
   justify-content: space-between;
@@ -259,6 +285,8 @@ p { margin: 0; }
   .hero { grid-template-columns: 1fr; padding-top: 10px; }
   .features { grid-template-columns: repeat(2, 1fr); }
   .hero-panel { display: none; }
+  .btn-logout-text { display: none; }
+  .btn-logout { padding: 8px 10px; }
 }
 
 @media (max-width: 560px) {
@@ -275,6 +303,8 @@ p { margin: 0; }
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
+  flex-direction: column;
+  gap: 16px;
 }
 .auth-card {
   background: var(--white);
@@ -312,7 +342,8 @@ p { margin: 0; }
 
 .demo-notice {
   max-width: 420px;
-  margin-top: 18px;
+  width: 100%;
+  margin-top: 4px;
   background: #FFF7E6;
   border: 1px solid var(--gold);
   border-radius: var(--radius-sm);
@@ -383,6 +414,7 @@ p { margin: 0; }
   border-top: 1px solid var(--line-dark);
   padding-top: 16px;
   margin-top: 16px;
+  flex-wrap: wrap;
 }
 .mini-profile { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
 .mini-profile-name {
