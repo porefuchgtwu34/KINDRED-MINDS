@@ -49,7 +49,10 @@
         <span class="mini-profile-name">{{ current_user.username }}</span>
       </a>
       <a href="{{ url_for('settings') }}" class="icon-link" title="Settings">⚙</a>
-      <a href="{{ url_for('logout') }}" class="icon-link" title="Log out">⏻</a>
+      <a href="{{ url_for('logout') }}" class="btn-logout" title="Log out">
+        <span class="btn-logout-icon">⏻</span>
+        <span class="btn-logout-text">Log out</span>
+      </a>
     </div>
   </aside>
 
