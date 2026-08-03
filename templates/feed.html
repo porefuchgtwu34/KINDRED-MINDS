@@ -3,65 +3,66 @@
 {% block content %}
 
 <div class="page-head">
-  <h1>Community feed</h1>
-  <p class="page-sub">Share what's on your mind about love, attachment, and connection.</p>
+  <div>
+    <span class="eyebrow">Community feed</span>
+    <h1>What's on your mind?</h1>
+  </div>
 </div>
 
 <form class="composer" method="POST" action="{{ url_for('new_post') }}">
-  <textarea name="content" placeholder="What's weighing on you, or what did you learn today?" required maxlength="2000"></textarea>
+  <textarea name="content" placeholder="Share something honest — a question, a win, a pattern you noticed about yourself..." maxlength="2000" required></textarea>
   <div class="composer-row">
     <select name="category">
       <option value="general">General</option>
-      <option value="attachment">Attachment</option>
       <option value="dating">Dating</option>
-      <option value="repair">Repair</option>
+      <option value="breakups">Breakups</option>
       <option value="family">Family</option>
-      <option value="friendship">Friendship</option>
+      <option value="self-growth">Self-growth</option>
+      <option value="advice-wanted">Advice wanted</option>
     </select>
-    <button type="submit" class="btn btn-rose btn-sm">Post</button>
+    <button type="submit" class="btn btn-rose">Post</button>
   </div>
 </form>
 
 <div class="category-filter">
-  <a href="{{ url_for('feed', category='all') }}" class="chip {{ 'chip-active' if category == 'all' }}">All</a>
-  <a href="{{ url_for('feed', category='general') }}" class="chip {{ 'chip-active' if category == 'general' }}">General</a>
-  <a href="{{ url_for('feed', category='attachment') }}" class="chip {{ 'chip-active' if category == 'attachment' }}">Attachment</a>
-  <a href="{{ url_for('feed', category='dating') }}" class="chip {{ 'chip-active' if category == 'dating' }}">Dating</a>
-  <a href="{{ url_for('feed', category='repair') }}" class="chip {{ 'chip-active' if category == 'repair' }}">Repair</a>
-  <a href="{{ url_for('feed', category='family') }}" class="chip {{ 'chip-active' if category == 'family' }}">Family</a>
-  <a href="{{ url_for('feed', category='friendship') }}" class="chip {{ 'chip-active' if category == 'friendship' }}">Friendship</a>
+  {% for c in ['all','general','dating','breakups','family','self-growth','advice-wanted'] %}
+    <a href="{{ url_for('feed', category=c) }}" class="chip {{ 'chip-active' if category == c }}">{{ c.replace('-', ' ')|title }}</a>
+  {% endfor %}
 </div>
 
-{% if posts %}
 <div class="post-list">
   {% for post in posts %}
   <article class="post-card">
-    <div class="post-card-head">
+    <header class="post-card-head">
       <a href="{{ url_for('profile', username=post.username) }}" class="avatar-link">
-        <span class="avatar avatar-sm">{{ post.username[0]|upper }}</span>
+        <span class="avatar">{{ post.username[0]|upper }}</span>
       </a>
       <div>
-        <a href="{{ url_for('profile', username=post.username) }}" class="post-author">{{ post.username }}</a>
-        {% if post.author_is_admin %}<span class="badge-admin">admin</span>{% endif %}
-        <span class="post-time">{{ post.created_at[:16].replace('T', ' ') }}</span>
+        <a href="{{ url_for('profile', username=post.username) }}" class="post-author">
+          {{ post.username }} {% if post.author_is_admin %}<span class="badge-admin">admin</span>{% endif %}
+        </a>
+        <time class="post-time">{{ post.created_at[:16].replace('T',' ') }} UTC &middot; {{ post.category.replace('-', ' ')|title }}</time>
       </div>
       {% if post.user_id == current_user.id or current_user.is_admin %}
-      <form class="inline-form" method="POST" action="{{ url_for('delete_post', post_id=post.id) }}" onsubmit="return confirm('Delete this post?')">
-        <button type="submit" class="btn-tiny btn-tiny-danger">Delete</button>
+      <form method="POST" action="{{ url_for('delete_post', post_id=post.id) }}" class="inline-form">
+        <button type="submit" class="icon-btn" title="Delete post" onclick="return confirm('Delete this post?')">🗑</button>
       </form>
       {% endif %}
-    </div>
-    <div class="post-content">{{ post.content }}</div>
-    <span class="category-pill">{{ post.category }}</span>
-    <a class="post-footer-link" href="{{ url_for('view_post', post_id=post.id) }}">
-      {{ post.comment_count }} comment{{ 's' if post.comment_count != 1 else '' }} →
+    </header>
+    <p class="post-content">{{ post.content }}</p>
+    <a href="{{ url_for('view_post', post_id=post.id) }}" class="post-footer-link">
+      💬 {{ post.comment_count }} comment{{ 's' if post.comment_count != 1 }} — give or get advice
     </a>
   </article>
+  {% else %}
+  <div class="empty-state">
+    <p>No posts here yet. Be the first to start a conversation.</p>
+  </div>
   {% endfor %}
 </div>
-{% include "_pagination.html" %}
-{% else %}
-<p class="empty-state">No posts yet in this category. Be the first.</p>
-{% endif %}
+
+{% with endpoint='feed', extra={'category': category} %}
+  {% include "_pagination.html" %}
+{% endwith %}
 
 {% endblock %}
