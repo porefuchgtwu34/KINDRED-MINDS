@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ profile_user.username }}{% endblock %}
+{% block content %}
+
+<div class="profile-header">
+  <span class="avatar avatar-lg">{{ profile_user.username[0]|upper }}</span>
+  <div>
+    <h1>{{ profile_user.username }} {% if profile_user.is_admin %}<span class="badge-admin">admin</span>{% endif %}</h1>
+    <p class="profile-bio">{{ profile_user.bio or "No bio yet." }}</p>
+    <time class="post-time">Member since {{ profile_user.created_at[:10] }}</time>
+  </div>
+  {% if profile_user.id != current_user.id %}
+  <a href="{{ url_for('conversation', username=profile_user.username) }}" class="btn btn-rose">Message</a>
+  {% endif %}
+</div>
+
+<h2 class="comments-heading">Recent posts</h2>
+<div class="post-list">
+  {% for post in posts %}
+  <article class="post-card">
+    <p class="post-content">{{ post.content }}</p>
+    <time class="post-time">{{ post.created_at[:16].replace('T',' ') }} UTC</time>
+  </article>
+  {% else %}
+  <div class="empty-state"><p>No posts yet.</p></div>
+  {% endfor %}
+</div>
+
+{% endblock %}

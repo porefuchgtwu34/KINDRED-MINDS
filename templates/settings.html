@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+{% block content %}
+
+<div class="page-head">
+  <div>
+    <span class="eyebrow">Your account</span>
+    <h1>Settings</h1>
+  </div>
+</div>
+
+<form class="auth-card auth-card-inline" method="POST">
+  <label>Username <span class="label-note">(can't be changed)</span>
+    <input type="text" value="{{ user.username }}" disabled>
+  </label>
+  <label>Email <span class="label-note">(private)</span>
+    <input type="text" value="{{ user.email }}" disabled>
+  </label>
+  <label>Bio <span class="label-note">shown on your public profile</span>
+    <textarea name="bio" maxlength="280" placeholder="A short line about you...">{{ user.bio }}</textarea>
+  </label>
+  <button type="submit" class="btn btn-rose">Save changes</button>
+</form>
+
+<p class="settings-note">
+  Want to change your password? <a href="{{ url_for('forgot_password') }}">Use the reset flow</a>.
+</p>
+
+{% endblock %}
