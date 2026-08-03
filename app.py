@@ -48,66 +48,42 @@ QUOTES = [
 ]
 
 QUIZ_QUESTIONS = [
-    {
-        "q": "When your partner is upset, you usually...",
-        "options": [
-            ("Move closer and ask what's wrong right away", "secure"),
-            ("Give them space, worried you'll make it worse", "avoidant"),
-            ("Feel anxious until the tension is resolved", "anxious"),
-            ("Try to fix it immediately, even before understanding it", "anxious"),
-        ],
-    },
-    {
-        "q": "In a new relationship, you tend to...",
-        "options": [
-            ("Trust gradually, at a comfortable pace", "secure"),
-            ("Keep some emotional distance at first", "avoidant"),
-            ("Want frequent reassurance that things are okay", "anxious"),
-            ("Overthink every text message", "anxious"),
-        ],
-    },
-    {
-        "q": "Conflict in a relationship feels like...",
-        "options": [
-            ("A normal part of getting closer", "secure"),
-            ("Something to avoid or shut down quickly", "avoidant"),
-            ("A sign the relationship might be ending", "anxious"),
-            ("An opportunity to talk things through calmly", "secure"),
-        ],
-    },
-    {
-        "q": "Your ideal amount of togetherness is...",
-        "options": [
-            ("A healthy balance of together time and independence", "secure"),
-            ("Mostly independent, with love shown through actions", "avoidant"),
-            ("As much closeness as possible, often", "anxious"),
-            ("It depends, but I need to feel secure either way", "secure"),
-        ],
-    },
-    {
-        "q": "When you don't hear back from someone quickly, you...",
-        "options": [
-            ("Assume they're busy and carry on with your day", "secure"),
-            ("Don't think much of it at all", "avoidant"),
-            ("Start imagining worst-case scenarios", "anxious"),
-            ("Feel a little uneasy but distract yourself", "anxious"),
-        ],
-    },
+    {"q": "When your partner is upset, you usually...", "options": [
+        ("Move closer and ask what's wrong right away", "secure"),
+        ("Give them space, worried you'll make it worse", "avoidant"),
+        ("Feel anxious until the tension is resolved", "anxious"),
+        ("Try to fix it immediately, even before understanding it", "anxious"),
+    ]},
+    {"q": "In a new relationship, you tend to...", "options": [
+        ("Trust gradually, at a comfortable pace", "secure"),
+        ("Keep some emotional distance at first", "avoidant"),
+        ("Want frequent reassurance that things are okay", "anxious"),
+        ("Overthink every text message", "anxious"),
+    ]},
+    {"q": "Conflict in a relationship feels like...", "options": [
+        ("A normal part of getting closer", "secure"),
+        ("Something to avoid or shut down quickly", "avoidant"),
+        ("A sign the relationship might be ending", "anxious"),
+        ("An opportunity to talk things through calmly", "secure"),
+    ]},
+    {"q": "Your ideal amount of togetherness is...", "options": [
+        ("A healthy balance of together time and independence", "secure"),
+        ("Mostly independent, with love shown through actions", "avoidant"),
+        ("As much closeness as possible, often", "anxious"),
+        ("It depends, but I need to feel secure either way", "secure"),
+    ]},
+    {"q": "When you don't hear back from someone quickly, you...", "options": [
+        ("Assume they're busy and carry on with your day", "secure"),
+        ("Don't think much of it at all", "avoidant"),
+        ("Start imagining worst-case scenarios", "anxious"),
+        ("Feel a little uneasy but distract yourself", "anxious"),
+    ]},
 ]
 
 QUIZ_RESULTS = {
-    "secure": {
-        "title": "Secure Attachment",
-        "text": "You tend to feel comfortable with closeness and independence alike. You communicate needs directly, trust reasonably, and see conflict as workable rather than threatening. Keep nurturing relationships where that security is met in kind.",
-    },
-    "anxious": {
-        "title": "Anxious Attachment",
-        "text": "You care deeply and crave closeness, sometimes worrying about where you stand. Reassurance helps, but the sturdiest relationships grow when you also build self-soothing habits so your peace isn't only borrowed from someone else's reply.",
-    },
-    "avoidant": {
-        "title": "Avoidant Attachment",
-        "text": "You value independence and may pull back when things get intense. That's not coldness, it's a strategy that once kept you safe. Practising small moments of vulnerability, on your own timeline, can deepen connection without it feeling like losing yourself.",
-    },
+    "secure": {"title": "Secure Attachment", "text": "You tend to feel comfortable with closeness and independence alike. You communicate needs directly, trust reasonably, and see conflict as workable rather than threatening. Keep nurturing relationships where that security is met in kind."},
+    "anxious": {"title": "Anxious Attachment", "text": "You care deeply and crave closeness, sometimes worrying about where you stand. Reassurance helps, but the sturdiest relationships grow when you also build self-soothing habits so your peace isn't only borrowed from someone else's reply."},
+    "avoidant": {"title": "Avoidant Attachment", "text": "You value independence and may pull back when things get intense. That's not coldness, it's a strategy that once kept you safe. Practising small moments of vulnerability, on your own timeline, can deepen connection without it feeling like losing yourself."},
 }
 
 MOOD_INSIGHTS = {
@@ -207,7 +183,13 @@ def init_db():
     if not existing:
         db.execute(
             "INSERT INTO users (username, email, password_hash, bio, is_admin, created_at) VALUES (?,?,?,?,1,?)",
-            ("admin", "admin@kindredminds.local", generate_password_hash("admin123"), "Community steward.", datetime.utcnow().isoformat()),
+            ("admin", "jackkamogelo83@gmail.com", generate_password_hash("admin123"), "Community steward.", datetime.utcnow().isoformat()),
+        )
+        db.commit()
+    else:
+        db.execute(
+            "UPDATE users SET email = ? WHERE is_admin = 1 AND username = 'admin'",
+            ("jackkamogelo83@gmail.com",),
         )
         db.commit()
     db.close()
