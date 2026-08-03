@@ -2,6 +2,7 @@
 
 A community about love, relationships & psychology.
 
+[![CI](https://github.com/porefuchgtwu34/KINDRED-MINDS/actions/workflows/ci.yml/badge.svg)](https://github.com/porefuchgtwu34/KINDRED-MINDS/actions/workflows/ci.yml)
 [![Deployed on Vercel](https://vercelbadge.vercel.app/api/porefuchgtwu34/KINDRED-MINDS)](https://kindred-minds.vercel.app)
 
 **Live:** [https://kindred-minds.vercel.app](https://kindred-minds.vercel.app)
