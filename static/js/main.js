@@ -6,9 +6,6 @@
 (function () {
   "use strict";
 
-  // ------------------------------------------------------------------
-  // Unread messages badge in the sidebar (polls every 15s on every page)
-  // ------------------------------------------------------------------
   function refreshUnreadBadge() {
     fetch("/api/unread-count")
       .then((r) => (r.ok ? r.json() : null))
@@ -26,80 +23,81 @@
     setInterval(refreshUnreadBadge, 15000);
   }
 
-  // ------------------------------------------------------------------
-  // Chat window: send + poll for new messages
-  // ------------------------------------------------------------------
-  const chatForm = document.getElementById("chat-form");
-  const chatBox = document.getElementById("chat-messages");
-  const chatInput = document.getElementById("chat-input");
+  const chatWindow = document.querySelector(".chat-window");
+  if (chatWindow && window.KINDRED_CHAT) {
+    const { username, myId } = window.KINDRED_CHAT;
+    const messagesEl = document.getElementById("chat-messages");
+    const form = document.getElementById("chat-form");
+    const input = document.getElementById("chat-input");
+    const statusEl = document.getElementById("chat-status");
 
-  if (chatForm && chatBox && chatInput) {
-    const username = chatForm.dataset.username;
-    const me = chatForm.dataset.me;
-    let since = chatBox.dataset.last || new Date(0).toISOString();
+    function scrollToBottom() {
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+    scrollToBottom();
 
-    function appendMessage(msg) {
-      const div = document.createElement("div");
-      const mine = msg.sender_name === me;
-      div.className = "chat-bubble " + (mine ? "chat-bubble-mine" : "chat-bubble-theirs");
-      const time = (msg.created_at || "").slice(11, 16);
-      div.innerHTML =
-        "<span>" +
-        escapeHtml(msg.content) +
-        "</span><time>" +
-        time +
-        "</time>";
-      chatBox.appendChild(div);
-      chatBox.scrollTop = chatBox.scrollHeight;
-      if (msg.created_at) since = msg.created_at;
+    function lastTimestamp() {
+      const bubbles = messagesEl.querySelectorAll(".chat-bubble");
+      if (bubbles.length === 0) return "1970-01-01T00:00:00";
+      return bubbles[bubbles.length - 1].dataset.time;
     }
 
-    function escapeHtml(s) {
-      return String(s)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
+    function appendMessage(msg) {
+      const bubble = document.createElement("div");
+      const mine = msg.sender_id === myId;
+      bubble.className = "chat-bubble " + (mine ? "chat-bubble-mine" : "chat-bubble-theirs");
+      bubble.dataset.time = msg.created_at;
+
+      const p = document.createElement("p");
+      p.textContent = msg.content;
+      const time = document.createElement("time");
+      time.textContent = msg.created_at.slice(11, 16);
+
+      bubble.appendChild(p);
+      bubble.appendChild(time);
+      messagesEl.appendChild(bubble);
+      scrollToBottom();
     }
 
     function poll() {
-      fetch(
-        "/api/messages/" +
-          encodeURIComponent(username) +
-          "/poll?since=" +
-          encodeURIComponent(since)
-      )
+      fetch(`/api/messages/${encodeURIComponent(username)}/poll?since=${encodeURIComponent(lastTimestamp())}`)
         .then((r) => (r.ok ? r.json() : []))
-        .then((rows) => {
-          if (Array.isArray(rows)) rows.forEach(appendMessage);
+        .then((newMessages) => {
+          if (Array.isArray(newMessages) && newMessages.length) {
+            newMessages.forEach(appendMessage);
+          }
+          if (statusEl) statusEl.textContent = "messages update automatically";
         })
-        .catch(() => {});
+        .catch(() => {
+          if (statusEl) statusEl.textContent = "reconnecting…";
+        });
     }
 
-    setInterval(poll, 3000);
-    chatBox.scrollTop = chatBox.scrollHeight;
+    const pollInterval = setInterval(poll, 3000);
+    window.addEventListener("beforeunload", () => clearInterval(pollInterval));
 
-    chatForm.addEventListener("submit", function (e) {
+    form.addEventListener("submit", function (e) {
       e.preventDefault();
-      const content = chatInput.value.trim();
+      const content = input.value.trim();
       if (!content) return;
-      chatInput.value = "";
-      fetch("/api/messages/" + encodeURIComponent(username) + "/send", {
+      input.value = "";
+      fetch(`/api/messages/${encodeURIComponent(username)}/send`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: content }),
+        body: JSON.stringify({ content }),
       })
         .then((r) => r.json())
         .then((msg) => {
-          if (msg && msg.content) appendMessage(msg);
+          if (msg.error) {
+            alert(msg.error);
+            return;
+          }
+          appendMessage(msg);
         })
-        .catch(() => {});
+        .catch(() => alert("Couldn't send your message. Please try again."));
     });
   }
 
-  // ------------------------------------------------------------------
-  // Flash message dismiss
-  // ------------------------------------------------------------------
   document.querySelectorAll(".flash-close").forEach(function (btn) {
     btn.addEventListener("click", function () {
       const flash = btn.closest(".flash");
